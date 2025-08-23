@@ -91,27 +91,7 @@ class MessageLoader {
         const card = document.createElement('div');
         card.className = 'message-card';
         
-        const channelInfo = document.createElement('div');
-        channelInfo.className = 'channel-info';
-        
-        const channelName = document.createElement('div');
-        channelName.className = 'channel-name';
-        channelName.textContent = item.name || '未知频道';
-        
-        const channelLink = document.createElement('a');
-        channelLink.className = 'channel-url';
-        channelLink.href = item.url || '#';
-        channelLink.target = '_blank';
-        channelLink.rel = 'noopener noreferrer';
-        channelLink.textContent = '查看频道';
-        
-        const messageDate = document.createElement('div');
-        messageDate.className = 'message-date';
-        messageDate.textContent = item.date || '未知时间';
-        
-        channelInfo.appendChild(channelName);
-        channelInfo.appendChild(channelLink);
-        
+        // 1. 直接展示 content 字段内容
         const messageContent = document.createElement('div');
         messageContent.className = 'message-content';
         
@@ -125,9 +105,32 @@ class MessageLoader {
         
         messageContent.innerHTML = content;
         
-        card.appendChild(channelInfo);
-        card.appendChild(messageDate);
+        // 2. 在下方展示抓取时间
+        const messageDate = document.createElement('div');
+        messageDate.className = 'message-date';
+        messageDate.textContent = `抓取时间：${item.date || '未知时间'}`;
+        
+        // 3. 展示 name 字段作为超链接指向 url
+        const channelInfo = document.createElement('div');
+        channelInfo.className = 'channel-info';
+        
+        const channelLink = document.createElement('a');
+        channelLink.className = 'channel-url';
+        // 确保URL有https://前缀
+        let channelUrl = item.url || '#';
+        if (channelUrl !== '#' && !channelUrl.startsWith('https://')) {
+            channelUrl = 'https://' + channelUrl;
+        }
+        channelLink.href = channelUrl;
+        channelLink.target = '_blank';
+        channelLink.rel = 'noopener noreferrer';
+        channelLink.textContent = item.name || '未知频道';
+        
+        channelInfo.appendChild(channelLink);
+        
         card.appendChild(messageContent);
+        card.appendChild(messageDate);
+        card.appendChild(channelInfo);
         
         return card;
     }

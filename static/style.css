@@ -85,44 +85,40 @@ body {
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
 }
 
-.channel-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.message-content {
+    color: #2d3748;
+    line-height: 1.7;
+    font-size: 1rem;
     margin-bottom: 15px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #e2e8f0;
 }
 
-.channel-name {
-    font-weight: 600;
-    color: #4a5568;
-    font-size: 1.1rem;
+.message-content p {
+    margin-bottom: 10px;
+}
+
+.message-date {
+    color: #718096;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+}
+
+.channel-info {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #e2e8f0;
 }
 
 .channel-url {
     color: #667eea;
     text-decoration: none;
     font-size: 0.9rem;
+    font-weight: 600;
 }
 
 .channel-url:hover {
     text-decoration: underline;
-}
-
-.message-date {
-    color: #718096;
-    font-size: 0.9rem;
-}
-
-.message-content {
-    color: #2d3748;
-    line-height: 1.7;
-    font-size: 1rem;
-}
-
-.message-content p {
-    margin-bottom: 10px;
 }
 
 .loading {
