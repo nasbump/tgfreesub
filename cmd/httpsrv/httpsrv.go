@@ -1,39 +1,43 @@
 package httpsrv
 
 import (
+	"embed"
+	"io/fs"
 	"net/http"
-	"path/filepath"
-	"strings"
 	"subexport/internal/logs"
 )
 
+//go:embed static/*
+var embeddedStaticFiles embed.FS
+
 func StartHttpSrv(addr string) error {
-	// 设置静态文件服务
-	staticDir := "."
-	fs := http.FileServer(http.Dir(staticDir))
+	// 使用嵌入的静态文件系统
+	staticFS, err := fs.Sub(embeddedStaticFiles, ".")
+	if err != nil {
+		logs.Fatal(err).Msg("Failed to get embedded static filesystem, using fallback")
+		return err
+	}
+
+	fsHandler := http.FileServer(http.FS(staticFS))
 
 	// 处理根路径，重定向到index.html
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		// 如果请求的是根路径，返回index.html
 		logs.Debug().Str("req", r.URL.Path).Str("from", r.RemoteAddr).Send()
 		if r.URL.Path == "/" {
-			indexPath := filepath.Join(staticDir, "/static/index.html")
-			http.ServeFile(w, r, indexPath)
-			return
-		}
-		if strings.HasPrefix(r.URL.Path, "/static/") {
-			fs.ServeHTTP(w, r)
+			// 从嵌入的文件系统中提供index.html
+			http.ServeFileFS(w, r, staticFS, "static/index.html")
 			return
 		}
 
-		w.WriteHeader(http.StatusNotFound)
+		// 处理静态文件请求
+		fsHandler.ServeHTTP(w, r)
 	})
 
 	// 单独处理API接口
 	http.HandleFunc("/subs/list", HndSubsList)
 
-	logs.Info().Str("addr", addr).Msg("HTTP server running on")
-	// logs.Info().Str("static_dir", staticDir).Msg("静态文件目录")
+	logs.Info().Str("addr", addr).Msg("HTTP server running with embedded static files")
 
 	return http.ListenAndServe(addr, nil)
 }
