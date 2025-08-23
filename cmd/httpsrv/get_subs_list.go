@@ -69,8 +69,8 @@ func HndSubsList(w http.ResponseWriter, r *http.Request) {
 	replyJson(w, rid, resp)
 }
 
-func replyJson(w http.ResponseWriter, rid string, j any) error {
-	logs.Debug().Rid(rid).Msgf("resp:%+v", j)
+func replyJson(w http.ResponseWriter, _ string, j any) error {
+	// logs.Debug().Rid(rid).Msgf("resp:%+v", j)
 	w.WriteHeader(http.StatusOK)
 	return json.NewEncoder(w).Encode(j)
 }
