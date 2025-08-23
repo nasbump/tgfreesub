@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"context"
+	"embed"
 	"fmt"
 	"os"
 	"strings"
@@ -26,6 +27,9 @@ type SubChannelInfo struct {
 	Pts        int // 保存频道的 PTS（状态点）
 }
 
+//go:embed static/*
+var embeddedStaticFiles embed.FS
+
 func main() {
 	appID := utils.XmArgValInt("appid", "https://core.telegram.org/api/obtaining_api_id", 0)
 	appHash := utils.XmArgValString("apphash", "", "")
@@ -44,7 +48,7 @@ func main() {
 
 	logs.Info().Int("appid", appID).Str("apphash", appHash).Strs("channel", channelNames).Send()
 	httpsrv.SubsRedisInit(rdsAddr)
-	go httpsrv.StartHttpSrv(httpAddr)
+	go httpsrv.StartHttpSrv(embeddedStaticFiles, httpAddr)
 
 	// 会话存储
 	sessionStorage := &session.FileStorage{Path: sessPath}

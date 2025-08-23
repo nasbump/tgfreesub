@@ -7,10 +7,7 @@ import (
 	"subexport/internal/logs"
 )
 
-//go:embed static/*
-var embeddedStaticFiles embed.FS
-
-func StartHttpSrv(addr string) error {
+func StartHttpSrv(embeddedStaticFiles embed.FS, addr string) error {
 	// 使用嵌入的静态文件系统
 	staticFS, err := fs.Sub(embeddedStaticFiles, ".")
 	if err != nil {
