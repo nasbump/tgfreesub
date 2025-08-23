@@ -55,34 +55,40 @@ body {
 
 .message-list {
     display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
     gap: 20px;
 }
 
 .message-card {
     background: white;
-    border-radius: 15px;
-    padding: 25px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
     border: 1px solid #e2e8f0;
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
 }
 
+/* 扑克牌样式 - 左上角装饰 */
 .message-card::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
+    top: 10px;
+    left: 10px;
+    width: 30px;
+    height: 30px;
     background: linear-gradient(135deg, #667eea, #764ba2);
-    border-radius: 2px 0 0 2px;
+    border-radius: 50%;
+    opacity: 0.8;
 }
 
 .message-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    transform: translateY(-5px) rotate(1deg);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
 }
 
 .message-content {
@@ -90,6 +96,8 @@ body {
     line-height: 1.7;
     font-size: 1rem;
     margin-bottom: 15px;
+    padding-left: 40px; /* 避免与左上角装饰重叠 */
+    padding-right: 40px; /* 避免与右下角装饰重叠 */
 }
 
 .message-content p {
@@ -144,6 +152,12 @@ body {
 }
 
 /* 响应式设计 */
+@media (max-width: 1024px) {
+    .message-list {
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    }
+}
+
 @media (max-width: 768px) {
     .container {
         padding: 15px;
@@ -166,18 +180,20 @@ body {
         padding: 20px;
     }
     
+    .message-list {
+        grid-template-columns: 1fr; /* 移动端单列显示 */
+        gap: 15px;
+    }
+    
     .message-card {
         padding: 20px;
+        min-height: auto;
     }
     
     .channel-info {
         flex-direction: column;
         align-items: flex-start;
         gap: 8px;
-    }
-    
-    .channel-name {
-        font-size: 1rem;
     }
 }
 
@@ -192,6 +208,11 @@ body {
     
     .message-content {
         font-size: 0.95rem;
+    }
+    
+    /* 移动端隐藏扑克牌装饰 */
+    .message-card::before {
+        display: none;
     }
 }
 
