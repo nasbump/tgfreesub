@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	"subexport/cmd/httpsrv"
-	"subexport/internal/logs"
 	"sync"
+	"tgfreesub/cmd/httpsrv"
+	"tgfreesub/internal/logs"
 	"time"
 
 	"github.com/gotd/td/session"

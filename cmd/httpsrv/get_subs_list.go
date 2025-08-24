@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"subexport/cmd/store"
-	"subexport/internal/logs"
+	"tgfreesub/cmd/store"
+	"tgfreesub/internal/logs"
 
 	"github.com/oklog/ulid/v2"
 )

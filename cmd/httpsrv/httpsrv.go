@@ -4,7 +4,7 @@ import (
 	"embed"
 	"io/fs"
 	"net/http"
-	"subexport/internal/logs"
+	"tgfreesub/internal/logs"
 )
 
 func StartHttpSrv(embeddedStaticFiles embed.FS, addr string) error {

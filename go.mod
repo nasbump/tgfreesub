@@ -1,4 +1,4 @@
-module subexport
+module tgfreesub
 
 go 1.23.3
 

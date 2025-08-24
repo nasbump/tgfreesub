@@ -2,10 +2,10 @@ package main
 
 import (
 	"embed"
-	"subexport/cmd/httpsrv"
-	"subexport/cmd/store"
-	"subexport/cmd/tg"
-	"subexport/internal/utils"
+	"tgfreesub/cmd/httpsrv"
+	"tgfreesub/cmd/store"
+	"tgfreesub/cmd/tg"
+	"tgfreesub/internal/utils"
 )
 
 //go:embed static/*

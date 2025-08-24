@@ -5,7 +5,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"subexport/internal/logs"
+	"tgfreesub/internal/logs"
 )
 
 type xmv struct {

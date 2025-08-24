@@ -3,8 +3,8 @@ package store
 import (
 	"fmt"
 	"strings"
-	"subexport/internal/logs"
-	"subexport/internal/redis"
+	"tgfreesub/internal/logs"
+	"tgfreesub/internal/redis"
 )
 
 type SubItem struct {
