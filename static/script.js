@@ -108,7 +108,9 @@ class MessageLoader {
         // 2. 在下方展示抓取时间
         const messageDate = document.createElement('div');
         messageDate.className = 'message-date';
-        messageDate.textContent = `抓取时间：${item.date || '未知时间'}`;
+        // 将时间戳转换为可读格式
+        const readableDate = item.date ? this.formatTimestamp(item.date) : '未知时间';
+        messageDate.textContent = `抓取时间：${readableDate}`;
         
         // 3. 展示 name 字段作为超链接指向 url
         const channelInfo = document.createElement('div');
@@ -147,6 +149,18 @@ class MessageLoader {
         if (endMarker) {
             endMarker.classList.add('visible');
         }
+    }
+
+    formatTimestamp(timestamp) {
+        const date = new Date(timestamp * 1000); // 转换为毫秒
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     }
 }
 

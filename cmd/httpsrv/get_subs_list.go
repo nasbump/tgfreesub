@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"subexport/cmd/store"
 	"subexport/internal/logs"
 
 	"github.com/oklog/ulid/v2"
@@ -18,8 +19,8 @@ type SubsListResp struct {
 	Msg   string `json:"msg,omitempty"`
 	Total int64  `json:"total"`
 	// Number int       `json:"number"`
-	Offset int64     `json:"offset"`
-	Itmes  []SubItem `json:"items,omitempty"`
+	Offset int64           `json:"offset"`
+	Itmes  []store.SubItem `json:"items,omitempty"`
 }
 
 // GET /subs/list?offset=0&number=10
@@ -57,10 +58,10 @@ func HndSubsList(w http.ResponseWriter, r *http.Request) {
 		Rtn:    0,
 		Msg:    "succ",
 		Offset: -1,
-		Total:  getItemsTotal(rid),
+		Total:  store.GetItemsTotal(rid),
 	}
 
-	nxt, items := querySubItems(rid, req.offset, req.number)
+	nxt, items := store.QuerySubItems(rid, req.offset, req.number)
 	if items != nil {
 		resp.Offset = nxt
 		resp.Itmes = items
