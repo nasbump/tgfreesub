@@ -92,6 +92,13 @@ func (r *RdsClient) ZsetAddMember(rKey string, score float64, member any) error 
 
 	return r.ZAdd(ctx, rKey, redis.Z{Score: score, Member: member}).Err()
 }
+func (r *RdsClient) ZsetIsMember(rKey string, member string) bool {
+	ctx, cancel := context.WithTimeout(context.Background(), RdsOperateTimeout)
+	defer cancel()
+
+	score, err := r.ZScore(ctx, rKey, member).Result()
+	return score > 0 && err == nil
+}
 
 func (r *RdsClient) HashGetAll(rKey string, out any) error {
 	ctx, cancel := context.WithTimeout(context.Background(), RdsOperateTimeout)

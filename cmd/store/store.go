@@ -46,6 +46,11 @@ func AddItem(rid string, item *SubItem) error {
 	member := fmt.Sprintf("%s_%d", item.ChannelUrl, item.Msgid)
 	rKey := subsItemKeyPrefix + member
 
+	if rds.ZsetIsMember(rKey, member) {
+		logs.Trace().Rid(rid).Int64("msgid", item.Msgid).Msg("had recored")
+		return nil
+	}
+
 	item.MsgContent = strings.ReplaceAll(item.MsgContent, "\n", "</ p>")
 	if err := rds.HashSetAll(rKey, item); err != nil {
 		logs.Warn(err).Rid(rid).Str("rkey", rKey).Msg("HashSetAll fail")
