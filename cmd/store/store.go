@@ -46,8 +46,8 @@ func AddItem(rid string, item *SubItem) error {
 	member := fmt.Sprintf("%s_%d", item.ChannelUrl, item.Msgid)
 	rKey := subsItemKeyPrefix + member
 
-	if rds.ZsetIsMember(rKey, member) {
-		logs.Trace().Rid(rid).Int64("msgid", item.Msgid).Msg("had recored")
+	if rds.ZsetIsMember(subsIndexKey, member) {
+		logs.Trace().Rid(rid).Str("subsIndexKey", subsIndexKey).Str("member", member).Msg("had recored")
 		return nil
 	}
 
@@ -57,6 +57,7 @@ func AddItem(rid string, item *SubItem) error {
 		return err
 	}
 
+	logs.Info().Rid(rid).Str("subsIndexKey", subsIndexKey).Str("member", member).Int64("score", score).Msg("add new record")
 	return rds.ZsetAddMember(subsIndexKey, float64(score), member)
 }
 
