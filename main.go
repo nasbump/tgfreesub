@@ -56,6 +56,19 @@ func main() {
 		return addNewSubItem(sci.Name, sci.Title, tgmsg.Date, tgmsg.Text, sci.ChannelID, int64(msgid))
 	})
 
+	ts.WithMsgHandle(tg.TgPhoto, func(msgid int, tgmsg *tg.TgMsg) error {
+		// 有些消息同时包含了照片，所以也要处理照片类型的消息
+		if tgmsg.Text == "" {
+			return nil
+		}
+		sci := tgmsg.From
+		dateStr := time.Unix(tgmsg.Date, 0).Format(time.DateTime)
+		logs.Info().Int("msgid", msgid).Str("content", tgmsg.Text).
+			Str("date", dateStr).Str("channel", sci.Name).
+			Msg(sci.Title)
+		return addNewSubItem(sci.Name, sci.Title, tgmsg.Date, tgmsg.Text, sci.ChannelID, int64(msgid))
+	})
+
 	ts.Run(names)
 }
 

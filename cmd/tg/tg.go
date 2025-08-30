@@ -14,16 +14,23 @@ import (
 )
 
 func (ts *TgSuber) handle(ctx context.Context, names []string) error {
+	ts.status = TgstatusLoging
 	if err := ts.login(ctx); err != nil {
+		ts.status = TgstatusLogFail
 		return err
 	}
 
 	// 获取当前用户信息，拿到 self ID
 	self, err := ts.client.Self(ctx)
 	if err != nil {
+		ts.status = TgstatusLogFail
 		logs.Warn(err).Msg("get self fail")
 		return err
 	}
+
+	ts.status = TgstatusLogOk
+	ts.FirstName = self.FirstName
+	ts.UserName = self.Username
 	logs.Info().Str("firstname", self.FirstName).Str("username", self.Username).
 		Int64("id", self.ID).Int64("accesshash", self.AccessHash).
 		Bool("bot", self.Bot).Str("phone", ts.Phone).
@@ -84,6 +91,9 @@ func (ts *TgSuber) login(ctx context.Context) error {
 
 	for {
 		code := ts.getLoginCode()
+		if code == "" {
+			continue
+		}
 
 		// 验证登录
 		if _, err := tsca.SignIn(ctx, ts.Phone, code, codeSent.PhoneCodeHash); err != nil {
@@ -101,8 +111,8 @@ func (ts *TgSuber) getChannels(ctx context.Context, names []string) map[int64]Su
 
 	api := ts.client.API()
 	for _, name := range names {
-		if strings.HasPrefix(name, "+") { // https://t.me/+sZF0XrTZVq02M2Yx
-			name = strings.TrimPrefix(name, "+")
+		if after, ok := strings.CutPrefix(name, "+"); ok { // https://t.me/+sZF0XrTZVq02M2Yx
+			name = after
 			invite, err := api.MessagesCheckChatInvite(ctx, name)
 			if err != nil {
 				logs.Warn(err).Str("name", name).Msg("check invite fail")
@@ -271,6 +281,7 @@ func (ts *TgSuber) recvChannelMsgHandle(ctx context.Context, msg *tg.Message, sc
 		return ts.recvChannelMediaMsg(ctx, msg, sci)
 	}
 	// 其他消息不支持
+	logs.Warn(ErrMsgClsUnsupport).Int("msgid", msg.ID).Str("from", sci.Title).Msg("recv unknown msg")
 	return ErrMsgClsUnsupport
 }
 func (ts *TgSuber) recvChannelNoteMsg(ctx context.Context, msg *tg.Message, sci *SubChannelInfo) error {
@@ -332,6 +343,7 @@ func (ts *TgSuber) recvChannelPhotoMsg(ctx context.Context, msg *tg.Message, sci
 
 	tgmsg := TgMsg{
 		From:     sci,
+		Text:     msg.Message,
 		FileName: fmt.Sprintf("%s_%d.jpg", sci.Name, photo.Date),
 		FileSize: int64(maxSize),
 		Date:     int64(msg.Date),
@@ -371,6 +383,7 @@ func (ts *TgSuber) recvChannelMediaMsg(ctx context.Context, msg *tg.Message, sci
 
 	tgmsg := TgMsg{
 		From:     sci,
+		Text:     msg.Message,
 		FileSize: int64(doc.GetSize()),
 		Date:     int64(msg.Date),
 
